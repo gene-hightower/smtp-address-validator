@@ -1,5 +1,5 @@
 CXXFLAGS := -std=c++20
-LDFLAGS := -lfmt
+# LDFLAGS := -lfmt
 
 test:: main
 	./main
