@@ -114,9 +114,6 @@ main := Mailbox @{ result = true; } $err{ result = false; };
 bool is_address(std::string_view s)
 {
     int cs = 0;
-    int act = 0;
-    const char* ts = nullptr;
-    const char* te = nullptr;
 
     const char* p = s.begin();
     const char* pe = s.end();
