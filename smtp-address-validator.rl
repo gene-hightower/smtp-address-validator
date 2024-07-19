@@ -1,4 +1,6 @@
 #include "smtp-address-validator.hpp"
+ 
+using namespace std::literals;
 
 %%{
 machine address;
@@ -111,8 +113,14 @@ main := Mailbox @{ result = true; } $err{ result = false; };
 
 %% write data;
 
-bool is_address(std::string_view s)
+bool is_address(std::string_view s) noexcept
 {
+    // An insane length, to protect the parsing code from huge input. SMTP line limit, minus command size.
+    constexpr auto insane_length = 1000 - "MAIL FROM:<>\r\n"sv.length();
+
+    if (s.length() > insane_length)
+      return false;
+
     int cs = 0;
 
     const char* p = s.begin();
@@ -123,6 +131,41 @@ bool is_address(std::string_view s)
 
     %% write init;
     %% write exec;
+
+    if (!result) // Failure to parse.
+      return false;
+
+    const auto at_idx = s.find_last_of("@"sv);
+    const auto domain = s.substr(at_idx + 1);
+
+    if (domain[0] == '[')       // An address literal.
+      return true;
+
+    // Further domain checks.
+    if (domain.length() > 253)
+      return false;
+
+    bool tld = false;
+
+    auto e = domain.length();
+    for (std::string_view::size_type dot;
+         (dot = domain.substr(0, e).find_last_of("."sv)) !=
+           std::string_view::npos;
+         e = dot) {
+      const auto label = domain.substr(dot + 1, e);
+      if (label.length() > 63)
+        return false;
+      if (!tld) {
+        if (label.length() < 2)
+          return false; // TLD too short
+        tld = true;
+      }
+    }
+    if (domain.substr(0, e).length() > 63)
+      return false;
+
+    if (!tld)
+      return false; // domain not fully qualified
 
     return result;
 }

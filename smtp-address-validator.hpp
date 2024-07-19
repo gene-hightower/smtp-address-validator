@@ -3,6 +3,6 @@
 
 #include <string_view>
 
-bool is_address(std::string_view s);
+bool is_address(std::string_view s) noexcept;
 
 #endif // SMTP_ADDRESS_PARTSER_HPP_INCLUDED

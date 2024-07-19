@@ -8,7 +8,6 @@ int main(int argc, char* argv[])
     "simple@example.com",
     "very.common@example.com",
     "disposable.style.email.with+symbol@example.com",
-    "admin@mailserver1",
     "\" \"@example.org",
     "\"john..doe\"@example.org",
     "\"<john-doe>\"@example.org",
@@ -30,6 +29,7 @@ int main(int argc, char* argv[])
   }
 
   const char* bad_addresses[] = {
+    "admin@mailserver1",        // used to be okay, now domain not fully qualified
     "\"john\\\\\"doe\"@example.org",
     "user@[300.0.0.1]",
     "user@[127.0.0.0.1]",
@@ -43,6 +43,9 @@ int main(int argc, char* argv[])
     "john..doe@example.com",
     "foo bar@example.com",
     "foo.bar@bad=domain.com",
+    "domain-too-long@XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.xyz",
+    "tld-too-short@foo.x",
+    "local-part@label_too_long_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.xyz"
   };
 
   for (auto bad: bad_addresses) {
