@@ -73,11 +73,11 @@ dcontent = graph - '\[' - '\\' - '\]';   # 33..90 | 94..126
 
 standardized_tag = Ldh_str;
 
-General_address_literal = standardized_tag ':' dcontent{1};
+## General_address_literal = standardized_tag ':' dcontent{1};
 
 # See rfc 5321 Section 4.1.3
 address_literal = '[' (IPv4_address_literal |
-                  IPv6_address_literal | General_address_literal) ']';
+                  IPv6_address_literal) ']';
 
 qtextSMTP = print - '"' - '\\' | UTF8_non_ascii;
 
